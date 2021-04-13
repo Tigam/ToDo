@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Anzeige der Todos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <script src="js/popper.min.js" type="text/javascript"></script>
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+        <link href="css/site.css" rel="stylesheet" type="text/css"/>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Anzeige der Aufgaben</h1>
+
+            <div class="row">
+                <div class="col"><a href="new" class="btn btn-primary">Neue Aufgabe anlegen</a>
+
+                    <form action="list" method="POST">
+                        <div>
+                            <label for="suche" class="form-label">Suchbegriff</label>
+                            <input type="text" name="suche" id="suche" class="form-control" th:value="${suche}"/>
+                            <div id="sucheHilfe" class="form-text">Suchbegriff eingeben. Groß-Kleinschreibung wird nicht beachtet.</div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-secondary">Suchen</button>
+                        </div>
+                    </form>
+
+                </div>
+                <!--                <div class="col" >
+                                    <div th:text="${closedCounter}"></div>
+                                    <div th:text="${openCounter}"></div>
+                                </div>-->
+                <div class="col" id="piechart"></div>
+            </div>
+
+            <div th:if="${infoMsg}" th:text="${infoMsg}" class="todo-info-msg"></div>
+
+            <div th:if="${#lists.isEmpty(items)}">Keine Ergebnisse</div>
+            <div th:unless="${#lists.isEmpty(items)}">
+                <span th:text="${#lists.size(items)}">0</span> Ergebnis<span th:if="${#lists.size(items) != 1}">se</span>
+            </div>
+
+            <div th:each="item, iter : ${items}" class="mt-2">
+                <div class="card mb-2" th:id="${'todo-item-' + item.id}">
+                    <h5 class="card-header" th:text="${item.title}"></span></h5>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="${#dates.format(item.createDate, 'dd.MM.yyyy')}">Datum</h6>
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="${#dates.format(item.todoDate, 'dd.MM.yyyy')}">Datum</h6>
+                        <p class="card-text" th:text="${item.text}"></p>
+                        <i class="bi bi-check-circle-fill text-success todo-item-closed" th:if="${item.closed}" ></i>
+                        <a th:if="${!item.closed}" th:href="${'closed?id=' + item.id}" class="btn btn-secondary" title="Erledigt markieren"><i class="bi bi-check2-circle"></i></a>
+                        <a th:href="${'edit?id=' + item.id}" class="btn btn-secondary" title="Bearbeiten"><i class="bi bi-pencil"></i></a>
+                        <a th:href="${'delete?id=' + item.id}" class="btn btn-secondary" title="Löschen"><i class="bi bi-trash"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <script th:inline="javascript">
+            var data = [{
+            values: [ [[${openCounter}]], [[${closedCounter}]] ],
+            labels: ['Offen', 'Erledigt'],
+            type: 'pie'
+            }];
+
+            var layout = {
+            height: 300,
+            width: 500
+            };
+
+            Plotly.newPlot('piechart', data, layout);
+        </script>
+    </body>
+</html>

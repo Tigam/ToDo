@@ -1,0 +1,19 @@
+/*
+Haupt CSS Datei für Todo Web App
+*/
+
+.todo-error-msg {
+  color: red;
+  font-size: 0.8em;
+  border: red solid 1px;
+}
+
+.todo-info-msg {
+  color: green;
+  font-size: 0.8em;
+}
+
+.todo-item-closed {
+  font-size: 1.8em;
+}
+
